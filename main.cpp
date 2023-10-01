@@ -123,7 +123,7 @@ int main(){
     //     std::cout << e->from->name << ", " << e->to->name << ", " << e->weight << std::endl;
     // }
 
-    std::cout << g.MSTCost() << std::endl;
+    // std::cout << g.MSTCost() << std::endl;
 
 
     // std::cout << "******************************TESTING HEAP***********************************"<<std::endl;

@@ -7,6 +7,7 @@ PriorityQueue::PriorityQueue() {
 
 // min-heap/priority queue INSERT operation
 void PriorityQueue::Insert(DistanceNode* dn) {
+    std::cout << "PriorityQueue::Insert - inserting dnode: " << dn->v->name << std::endl;
     // remember: distancenode has 2 properties/data members, a pointer to a vertex and distance from source node
     dnodes.push_back(dn); // add new node to end of heap
 

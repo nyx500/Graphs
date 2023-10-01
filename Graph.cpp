@@ -237,17 +237,17 @@ int Graph::getIndexOfSmallestNode(std::vector<Edge*>& edges, int root)
 }
 
 Graph *Graph::SP(std::string from, std::string to) {
-
+  std::cout << "Graph::SP" << std::endl;
   // Initialization steps: distances array, prev array for path, min-heap/priority queue
-  std::vector<int> distances;
-  std::vector<Vertex*>prev;
+  std::vector<int> distances(vlist.size());
+  std::vector<Vertex*>prev(vlist.size());
   PriorityQueue* Q = new PriorityQueue();
 
   // Fill the dist and prev arrays for the 'source' node (dist = 0, prev = source node) 
   // and the other nodes (dist=infinity, prev=NULL)
   for (int i = 0; i < vlist.size(); ++i)
-  {
-    if (vlist[i]->name == "from")
+  { 
+    if (vlist[i]->name == from)
     {
       distances[i] = 0;
       // Previous node for source node = source node
@@ -276,7 +276,7 @@ Graph *Graph::SP(std::string from, std::string to) {
         std::stack<Vertex*> myStack;
 
         // Get index of this last node from the list of vertices:
-        int index_of_last_node = NULL;
+        int index_of_last_node = -1;
         DistanceNode* last_node = Q->ExtractMin();
         for (int i = 0; i < vlist.size(); ++i)
         {
