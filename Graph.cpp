@@ -245,34 +245,42 @@ Graph *Graph::SP(std::string from, std::string to) {
 
   // Fill the dist and prev arrays for the 'source' node (dist = 0, prev = source node) 
   // and the other nodes (dist=infinity, prev=NULL)
-  for (int i = 0; i < vlist.size(); ++i)
+  for (int i = 0; i < vlist.size(); i++)
   { 
+    std::cout << "loop iteration " << i << std::endl;
     if (vlist[i]->name == from)
     {
       distances[i] = 0;
       // Previous node for source node = source node
       prev[i] = vlist[i];
-      // Insert source node into priority queue
-      DistanceNode* dnode = new DistanceNode(vlist[i], 0);
-      Q->Insert(dnode);
+      Q->Insert(new DistanceNode(vlist[i], 0));
     }
     else
     {
-      // Set unknown nodes' distance to NULL
+      // Set unknown nodes' distance to out of rangse number
       distances[i] = INT_MAX;
       // No prev node as not discovered yet
-      prev[i] = NULL;
-      // Insert non-source node into priority queue
-      DistanceNode* dnode = new DistanceNode(vlist[i], INT_MAX);
-      Q->Insert(dnode);
+      prev[i] = nullptr;
+      Q->Insert(new DistanceNode(vlist[i], INT_MAX));
     }
+  }
+
 
     // Continue loop while priority queue still contains undiscovered nodes (set U still contains elements)
-    while (!Q->dnodes.size() > 0)
+    while (Q->dnodes.size() > 0)
     {
       // Check if we are at the last node to discover and if we are, then create Stack of route
       if (Q->dnodes.size() == 1)
       {
+        std::cout << "Size of Q is now 1 " << std::endl;
+
+        std::cout << prev.size() << std::endl;
+        std::cout << distances.size() << std::endl;
+        for (int i = 0; i < vlist.size();i++)
+        {
+          std::cout << prev[i]->name << " : " << distances[i] << std::endl;
+        }
+
         std::stack<Vertex*> myStack;
 
         // Get index of this last node from the list of vertices:
@@ -285,8 +293,7 @@ Graph *Graph::SP(std::string from, std::string to) {
             index_of_last_node = i;
           }
         }
-
-        Vertex* u = vlist[i];
+        Vertex* u = vlist[index_of_last_node];
         while (prev[index_of_last_node]->name != from)
         {
           myStack.push(u);
@@ -298,43 +305,63 @@ Graph *Graph::SP(std::string from, std::string to) {
             index_of_last_node = static_cast<int>(std::distance(prev.begin(), it));
           }
         }
-
         while(!myStack.empty())
         {
           std::cout << myStack.top()->name << std::endl;
           myStack.pop();
         }
-
       }
 
       DistanceNode* dn = Q->ExtractMin();
+      std::cout << "Min node extracted: " << dn->v->name << " Distance: " << dn->distance << std::endl;
+
       for (Edge* e : dn->v->adjlist)
       { 
-        int index_of_vertex = -1;
+        std::cout << "Current vertex: " << dn->v->name << std::endl;
+        std::cout << "Current neighbour: " << e->to->name << " " << e->weight << std::endl;
+
+        int index_of_vertex_in_q = -1;
+        // Check neighbour node is still in unexplored set in Q
         for (int i = 0; i < Q->dnodes.size(); ++i)
         {
           if (Q->dnodes[i]->v->name == e->to->name)
           {
-            index_of_vertex = i;
+            index_of_vertex_in_q = i;
+            break;
           }
         }
-        if (index_of_vertex != -1)
+        if (index_of_vertex_in_q != -1)
         { 
-          auto iter = std::find(vlist.begin(), vlist.end(), dn->v);
+          auto iter = std::find(vlist.begin(), vlist.end(), e->to);
           int index_of_vertex_in_dist_array = static_cast<int>(std::distance(vlist.begin(), iter));
-          int newDistance = distances[index_of_vertex_in_dist_array] + e->weight;
-          // Now find corresponding index for this vertex in prev array
-          prev[index_of_vertex_in_dist_array] = dn->v;
-          Q->DecreaseKey(dn->v->name, newDistance);
+          std::cout << "Vertex " << vlist[index_of_vertex_in_dist_array]->name << " is still in Q" << std::endl;
+          int newDistance;
+          if (distances[index_of_vertex_in_dist_array] == INT_MAX)
+          {
+             newDistance =  e->weight;
+          }
+          else
+          {
+            newDistance = distances[index_of_vertex_in_dist_array] + e->weight;
+          }
+          if (newDistance < distances[index_of_vertex_in_dist_array])
+          {
+            std::cout << "Distance before: " <<  distances[index_of_vertex_in_dist_array] << std::endl;
+            distances[index_of_vertex_in_dist_array] = newDistance;
+            std::cout << "Distance after: " <<  distances[index_of_vertex_in_dist_array] << std::endl;
+            prev[index_of_vertex_in_dist_array] = dn->v;
+            std::cout << "New distance for " << vlist[index_of_vertex_in_dist_array]->name << std::endl;
+            std::cout << distances[index_of_vertex_in_dist_array] << std::endl;
+            std::cout << "New previous vertex for " << vlist[index_of_vertex_in_dist_array]->name << std::endl;
+            std::cout << prev[index_of_vertex_in_dist_array]->name << std::endl;
+            Q->DecreaseKey(dn->v->name, newDistance);
+          }
         }
       }
 
     }
-
-  }
-
   return NULL;
-}
+  }
 
 
 int Graph::SPCost(std::string from, std::string to) {
