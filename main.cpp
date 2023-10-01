@@ -42,7 +42,6 @@ int main(){
     g.addEdge("Rome", "Berlin", 7);
     g.addEdge("Rome", "Amsterdam", 6);
     g.addEdge("Berlin", "Amsterdam", 3);
-    g.addEdge("Rome", "London", 9);
 
     // for (Edge* e : g.getVertex("London")->adjlist)
     // {
