@@ -4,7 +4,9 @@
 #include "Vertex.hpp"
 #include "Edge.hpp"
 #include "Set.hpp"
+#include "PriorityQueue.hpp"
 
+class DistanceNode;
 
 class Graph {
 public:

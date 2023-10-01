@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cmath>
+#include <climits>
 #include "Vertex.hpp"
 #include "Edge.hpp"
 #include "Graph.hpp"
@@ -21,7 +22,7 @@ int main(){
     // std::cout << std::endl;
     // Create the graph
     Graph g{};
-    g.addVertex("London");
+    g.addVertex("London");  
     g.addVertex("Berlin");
     g.addVertex("Rome");
     g.addVertex("Paris");
@@ -124,5 +125,89 @@ int main(){
 
     std::cout << g.MSTCost() << std::endl;
 
+
+    // std::cout << "******************************TESTING HEAP***********************************"<<std::endl;
+
+    // Vertex* v1 = new Vertex("Tokyo");
+    // Vertex* v2 = new Vertex("Bangkok");
+    // Vertex* v3 = new Vertex("Canberra");
+    // Vertex* v4 = new Vertex("Sydney");
+    // Vertex* v5 = new Vertex("Christchurch");
+    // Vertex* v6 = new Vertex("Shanghai");
+    // Vertex* v7 = new Vertex("Beijing");
+
+    // // Placeholder for infinity before 'node'/vertex is discovered in Dijkstra's Algorithm
+    // int infinity = INT_MAX;
+
+    // DistanceNode* dn1  = new DistanceNode(v1, 0);
+    // DistanceNode* dn2 = new DistanceNode(v2, infinity);
+    // DistanceNode* dn3 = new DistanceNode(v3, infinity);
+    // DistanceNode* dn4 = new DistanceNode(v4, infinity);
+    // DistanceNode* dn5 = new DistanceNode(v5, infinity);
+    // DistanceNode* dn6 = new DistanceNode(v6, infinity);
+
+    // // Initialize new Priority Queue
+    // PriorityQueue q{};
+
+    // q.Insert(dn1);
+    // q.Insert(dn2);
+    // q.Insert(dn3);
+    // q.Insert(dn4);
+    // q.Insert(dn5);
+    // q.Insert(dn6);
+
+    // // Check insert operation has been successful
+    // int counter = 1;
+    // for (auto& dnode : q.dnodes)
+    // {   
+    //     std::cout << "Distance Node " << counter << std::endl;
+    //     std::cout << "Distance Node's distance: " << dnode->distance << std::endl;
+    //     std::cout << "Distance Node's name: " << dnode->v->name << std::endl;
+    //     std::cout << std::endl;
+    //     std::cout << std::endl;
+    //     ++counter;
+    // }
+
+    // std::cout << "*****************************************************************" << std::endl;
+
+    // // TEST: Extract Min Operation
+    // DistanceNode* min = q.ExtractMin();
+    // std::cout << min->v->name << " , " << min->distance << std::endl;
+
+    // // Check extract min operation has been successful
+    // counter = 1;
+    // for (auto& dnode : q.dnodes)
+    // {   
+    //     std::cout << "Distance Node " << counter << std::endl;
+    //     std::cout << "Distance Node's distance: " << dnode->distance << std::endl;
+    //     std::cout << "Distance Node's name: " << dnode->v->name << std::endl;
+    //     std::cout << std::endl;
+    //     std::cout << std::endl;
+    //     ++counter;
+    // }
+
+    // std::cout << "*****************************************************************" << std::endl;
+
+    // // Check decrease key operation has been successful
+    // q.DecreaseKey("Sydney", 5);
+    // q.DecreaseKey("Shanghai", 4);
+    // q.DecreaseKey("Christchurch", 7);
+    // q.DecreaseKey("Canberra", 3);
+    // q.DecreaseKey("Sydney", 1);
+    // q.DecreaseKey("Christchurch", 4);
+    // q.DecreaseKey("Bangkok", 6);
+    // counter = 1;
+    // for (auto& dnode : q.dnodes)
+    // {   
+    //     std::cout << "Distance Node " << counter << std::endl;
+    //     std::cout << "Distance Node's distance: " << dnode->distance << std::endl;
+    //     std::cout << "Distance Node's name: " << dnode->v->name << std::endl;
+    //     std::cout << std::endl;
+    //     std::cout << std::endl;
+    //     ++counter;
+    // }
+    
+    g.SP("London", "Rome");
+    
     return 0;
 }

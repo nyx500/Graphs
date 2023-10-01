@@ -1,5 +1,8 @@
 #include <iostream>
 #include <cmath>
+#include <stack>
+#include <climits>
+#include <algorithm>
 
 #include "Graph.hpp"
 #include "DisjointSet.hpp"
@@ -233,13 +236,111 @@ int Graph::getIndexOfSmallestNode(std::vector<Edge*>& edges, int root)
   return smallest_index;
 }
 
+Graph *Graph::SP(std::string from, std::string to) {
+
+  // Initialization steps: distances array, prev array for path, min-heap/priority queue
+  std::vector<int> distances;
+  std::vector<Vertex*>prev;
+  PriorityQueue* Q = new PriorityQueue();
+
+  // Fill the dist and prev arrays for the 'source' node (dist = 0, prev = source node) 
+  // and the other nodes (dist=infinity, prev=NULL)
+  for (int i = 0; i < vlist.size(); ++i)
+  {
+    if (vlist[i]->name == "from")
+    {
+      distances[i] = 0;
+      // Previous node for source node = source node
+      prev[i] = vlist[i];
+      // Insert source node into priority queue
+      DistanceNode* dnode = new DistanceNode(vlist[i], 0);
+      Q->Insert(dnode);
+    }
+    else
+    {
+      // Set unknown nodes' distance to NULL
+      distances[i] = INT_MAX;
+      // No prev node as not discovered yet
+      prev[i] = NULL;
+      // Insert non-source node into priority queue
+      DistanceNode* dnode = new DistanceNode(vlist[i], INT_MAX);
+      Q->Insert(dnode);
+    }
+
+    // Continue loop while priority queue still contains undiscovered nodes (set U still contains elements)
+    while (!Q->dnodes.size() > 0)
+    {
+      // Check if we are at the last node to discover and if we are, then create Stack of route
+      if (Q->dnodes.size() == 1)
+      {
+        std::stack<Vertex*> myStack;
+
+        // Get index of this last node from the list of vertices:
+        int index_of_last_node = NULL;
+        DistanceNode* last_node = Q->ExtractMin();
+        for (int i = 0; i < vlist.size(); ++i)
+        {
+          if (last_node->v->name == vlist[i]->name)
+          {
+            index_of_last_node = i;
+          }
+        }
+
+        Vertex* u = vlist[i];
+        while (prev[index_of_last_node]->name != from)
+        {
+          myStack.push(u);
+          u = prev[index_of_last_node];
+          // Use C++ <algorithm> library to search for index of u in the prev array
+          auto it = std::find(prev.begin(), prev.end(), u);
+          if (it != prev.end())
+          {
+            index_of_last_node = static_cast<int>(std::distance(prev.begin(), it));
+          }
+        }
+
+        while(!myStack.empty())
+        {
+          std::cout << myStack.top()->name << std::endl;
+          myStack.pop();
+        }
+
+      }
+
+      DistanceNode* dn = Q->ExtractMin();
+      for (Edge* e : dn->v->adjlist)
+      { 
+        int index_of_vertex = -1;
+        for (int i = 0; i < Q->dnodes.size(); ++i)
+        {
+          if (Q->dnodes[i]->v->name == e->to->name)
+          {
+            index_of_vertex = i;
+          }
+        }
+        if (index_of_vertex != -1)
+        { 
+          auto iter = std::find(vlist.begin(), vlist.end(), dn->v);
+          int index_of_vertex_in_dist_array = static_cast<int>(std::distance(vlist.begin(), iter));
+          int newDistance = distances[index_of_vertex_in_dist_array] + e->weight;
+          // Now find corresponding index for this vertex in prev array
+          prev[index_of_vertex_in_dist_array] = dn->v;
+          Q->DecreaseKey(dn->v->name, newDistance);
+        }
+      }
+
+    }
+
+  }
+
+  return NULL;
+}
+
+
 int Graph::SPCost(std::string from, std::string to) {
     return -1;
 }
 
-Graph *Graph::SP(std::string from, std::string to) {
-    return NULL;
-}
 
 
 
